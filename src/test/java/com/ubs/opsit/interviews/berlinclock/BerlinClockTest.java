@@ -64,10 +64,10 @@ public class BerlinClockTest {
     @Test
     public void testFirstHourLine() {
         // arrange
-        final String fourteenHundredHours = "14:00:00";
+        final String timeWithMoreThan4Hr = "14:00:00";
 
         // act
-        final String output = berlinClock.convertTime(fourteenHundredHours);
+        final String output = berlinClock.convertTime(timeWithMoreThan4Hr);
 
         // assert
         final String[] lines = output.split(NEWLINE);
@@ -77,10 +77,10 @@ public class BerlinClockTest {
     @Test
     public void testSecondHourLine() {
         // arrange
-        final String twentyOneHundredHours = "21:00:00";
+        final String timeWithNoMultiple5Hr = "21:00:00";
 
         // act
-        final String output = berlinClock.convertTime(twentyOneHundredHours);
+        final String output = berlinClock.convertTime(timeWithNoMultiple5Hr);
 
         // assert
         final String[] lines = output.split(NEWLINE);
@@ -90,14 +90,77 @@ public class BerlinClockTest {
     @Test
     public void testYellowPlacesInFirstMinuteLine() {
         // arrange
-        final String timeWith10Minutes = "18:10:27";
+        final String timeWithMultiple5Min = "18:10:27";
 
         // act
-        final String output = berlinClock.convertTime(timeWith10Minutes);
+        final String output = berlinClock.convertTime(timeWithMultiple5Min);
 
         // assert
         final String[] lines = output.split(NEWLINE);
         assertThat(lines[MINUTES1]).isEqualTo("YYOOOOOOOOO");
+    }
+
+    @Test
+    public void testRedPlacesInFirstMinuteLine() {
+        // arrange
+        final String timeWithMultiple15Min = "19:30:40";
+
+        // act
+        final String output = berlinClock.convertTime(timeWithMultiple15Min);
+
+        // assert
+        final String[] lines = output.split(NEWLINE);
+        assertThat(lines[MINUTES1]).isEqualTo("YYRYYROOOOO");
+    }
+
+    @Test
+    public void testSecondMinuteLine() {
+        // arrange
+        final String timeWithNoMultiple5Min = "20:06:07";
+
+        // act
+        final String output = berlinClock.convertTime(timeWithNoMultiple5Min);
+
+        // assert
+        final String[] lines = output.split(NEWLINE);
+        assertThat(lines[MINUTES2]).isEqualTo("YOOO");
+    }
+
+    @Test
+    public void convertTimeBeforeMidnight() {
+        // arrange
+        final String lastMinuteOfDay = "23:59:59";
+        final String expectedBerlinClockState = layoutAsString(
+                "O",
+                "RRRR",
+                "RRRO",
+                "YYRYYRYYRYY",
+                "YYYY");
+
+        // act
+        final String output = berlinClock.convertTime(lastMinuteOfDay);
+
+        // assert
+        assertThat(output).isEqualTo(expectedBerlinClockState);
+    }
+
+    @Test
+    public void convertEarlyMorning() {
+        // arrange
+        final String timeWithLittleHoursMinutesAndSeconds = "04:04:04";
+        final String expectedBerlinClockState = layoutAsString(
+                "Y",
+                "OOOO",
+                "RRRR",
+                "OOOOOOOOOOO",
+                "YYYY");
+
+        // act
+        final String output = berlinClock
+                .convertTime(timeWithLittleHoursMinutesAndSeconds);
+
+        // assert
+        assertThat(output).isEqualTo(expectedBerlinClockState);
     }
 
     private String layoutAsString(
