@@ -5,12 +5,12 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.ubs.opsit.interviews.berlinclock.BerlinClock.NEWLINE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BerlinClockTest {
 
     private final TimeConverter berlinClock = new BerlinClock();
 
-    private final int SECONDS = 0;
     private final int HOURS1 = 1;
     private final int HOURS2 = 2;
     private final int MINUTES1 = 3;
@@ -19,10 +19,10 @@ public class BerlinClockTest {
     @Test
     public void secondLampShouldBeYellowAtEvenSecond() {
         // arrange
-        final String timeWithEvenSeconds = "00:00:02";
+        final String timeWith2Sec = "00:00:02";
 
         // act
-        final String output = berlinClock.convertTime(timeWithEvenSeconds);
+        final String output = berlinClock.convertTime(timeWith2Sec);
 
         // assert
         final String secLine = output.substring(0, 1);
@@ -32,10 +32,10 @@ public class BerlinClockTest {
     @Test
     public void secondLampShouldBeOffAtOddSecond() {
         // arrange
-        final String timeWithOddSeconds = "00:00:05";
+        final String timeWith5Sec = "00:00:05";
 
         // act
-        final String output = berlinClock.convertTime(timeWithOddSeconds);
+        final String output = berlinClock.convertTime(timeWith5Sec);
 
         // assert
         final String secLine = output.substring(0, 1);
@@ -43,71 +43,131 @@ public class BerlinClockTest {
     }
 
     @Test
-    public void firstHourLineShouldBePartiallyFilledBetween5And19Hours() {
+    public void firstHourLineShouldBeEmptyAtLessThan5Hours() {
         // arrange
-        final String timeWithMoreThan4AndLessThan20Hr = "14:00:00";
+        final String timeWith3Hr = "03:22:47";
 
         // act
-        final String output
-                = berlinClock.convertTime(timeWithMoreThan4AndLessThan20Hr);
+        final String output = berlinClock.convertTime(timeWith3Hr);
+
+        // assert
+        assertThat(extractLine(output, HOURS1)).isEqualTo("OOOO");
+    }
+
+    @Test
+    public void firstHourLineShouldBePartiallyFilledBetween5And19Hours() {
+        // arrange
+        final String timeWith14Hr = "14:00:00";
+
+        // act
+        final String output = berlinClock.convertTime(timeWith14Hr);
 
          // assert
         assertThat(extractLine(output, HOURS1)).isEqualTo("RROO");
     }
 
     @Test
-    public void secondHourLineShouldBePartiallyFilledAtNoMultiple5Hours() {
+    public void firstHourLineShouldBeFullAtMoreThan19Hours() {
         // arrange
-        final String timeWithNoMultiple5Hr = "21:00:00";
+        final String timeWith21Hr = "21:25:19";
 
         // act
-        final String output = berlinClock.convertTime(timeWithNoMultiple5Hr);
+        final String output = berlinClock.convertTime(timeWith21Hr);
+
+        // assert
+        assertThat(extractLine(output, HOURS1)).isEqualTo("RRRR");
+    }
+
+    @Test
+    public void secondHourLineShouldBeEmptyAtMultiple5Hours() {
+        // arrange
+        final String timeWith15Hr = "15:29:39";
+
+        // act
+        final String output = berlinClock.convertTime(timeWith15Hr);
+
+        // assert
+        assertThat(extractLine(output, HOURS2)).isEqualTo("OOOO");
+    }
+
+    @Test
+    public void secondHourLineShouldHaveRedLampsOnAtNoMultiple5Hours() {
+        // arrange
+        final String timeWith21Hr = "21:00:00";
+
+        // act
+        final String output = berlinClock.convertTime(timeWith21Hr);
 
         // assert
         assertThat(extractLine(output, HOURS2)).isEqualTo("ROOO");
     }
 
     @Test
-    public void firstMinuteLineShouldBePartiallyFilledYellowAtLessThan15Minutes() {
+    public void firstMinuteLineShouldbeEmptyAtLessThan5Minutes() {
         // arrange
-        final String timeWithMultiple5Min = "18:10:27";
+        final String timeWith4Min = "03:04:24";
 
         // act
-        final String output = berlinClock.convertTime(timeWithMultiple5Min);
+        final String output = berlinClock.convertTime(timeWith4Min);
+
+        // assert
+        assertThat(extractLine(output, MINUTES1)).isEqualTo("OOOOOOOOOOO");
+    }
+
+    @Test
+    public void firstMinuteLineShouldHaveYellowLampsOnBetween5And14Minutes() {
+        // arrange
+        final String timeWith10Min = "18:10:27";
+
+        // act
+        final String output
+                = berlinClock.convertTime(timeWith10Min);
 
         // assert
         assertThat(extractLine(output, MINUTES1)).isEqualTo("YYOOOOOOOOO");
     }
 
     @Test
-    public void firstMinuteLineShouldHaveRedLampsForMultiple15Minutes() {
+    public void firstMinuteLineShouldHaveRedLampsOnForMultiple15Minutes() {
         // arrange
-        final String timeWithMultiple15Min = "19:30:40";
+        final String timeWith30Min = "19:30:40";
 
         // act
-        final String output = berlinClock.convertTime(timeWithMultiple15Min);
+        final String output = berlinClock.convertTime(timeWith30Min);
 
         // assert
         assertThat(extractLine(output, MINUTES1)).isEqualTo("YYRYYROOOOO");
     }
 
     @Test
-    public void secondMinuteLineShoulBePartiallyFilledAtNoMultiple5Minutes() {
+    public void secondMiunteLineShouldBeEmptyAtMultiple5Mitutes() {
         // arrange
-        final String timeWithNoMultiple5Min = "20:06:07";
+        final String timeWith45Min = "16:45:11";
 
         // act
-        final String output = berlinClock.convertTime(timeWithNoMultiple5Min);
+        final String output = berlinClock.convertTime(timeWith45Min);
+
+        // assert
+        assertThat(extractLine(output, MINUTES2)).isEqualTo("OOOO");
+    }
+
+    @Test
+    public void secondMinuteLineShouldHaveYellowLampsOnAtNoMultiple5Minutes() {
+        // arrange
+        final String timeWith6Min = "20:06:07";
+
+        // act
+        final String output = berlinClock.convertTime(timeWith6Min);
 
         // assert
         assertThat(extractLine(output, MINUTES2)).isEqualTo("YOOO");
     }
 
     @Test
-    public void convertMidnight() {
+    public void convertFirstStateOfDay() {
         // arrange
         final String midnight = "00:00:00";
-        final String expectedBerlinerMidnight = layoutAsString(
+        final String expectedBerlinerClockState = layoutAsString(
                 "Y",
                 "OOOO",
                 "OOOO",
@@ -115,14 +175,14 @@ public class BerlinClockTest {
                 "OOOO");
 
         // act
-        final String berlinerMidnight = berlinClock.convertTime(midnight);
+        final String output = berlinClock.convertTime(midnight);
 
         // assert
-        assertThat(berlinerMidnight).isEqualTo(expectedBerlinerMidnight);
+        assertThat(output).isEqualTo(expectedBerlinerClockState);
     }
 
     @Test
-    public void convertTimeBeforeMidnight() {
+    public void convertLastStateOfDay() {
         // arrange
         final String lastMinuteOfDay = "23:59:59";
         final String expectedBerlinClockState = layoutAsString(
@@ -134,25 +194,6 @@ public class BerlinClockTest {
 
         // act
         final String output = berlinClock.convertTime(lastMinuteOfDay);
-
-        // assert
-        assertThat(output).isEqualTo(expectedBerlinClockState);
-    }
-
-    @Test
-    public void convertEarlyMorning() {
-        // arrange
-        final String timeWithLittleHoursMinutesAndSeconds = "04:04:04";
-        final String expectedBerlinClockState = layoutAsString(
-                "Y",
-                "OOOO",
-                "RRRR",
-                "OOOOOOOOOOO",
-                "YYYY");
-
-        // act
-        final String output = berlinClock
-                .convertTime(timeWithLittleHoursMinutesAndSeconds);
 
         // assert
         assertThat(output).isEqualTo(expectedBerlinClockState);
