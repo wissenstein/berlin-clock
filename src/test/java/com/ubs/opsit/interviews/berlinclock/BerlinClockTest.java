@@ -18,24 +18,6 @@ public class BerlinClockTest {
     private final int MINUTES2 = 4;
 
     @Test
-    public void convertMidnight() {
-        // arrange
-        final String midnight = "00:00:00";
-        final String expectedBerlinerMidnight = layoutAsString(
-                "Y",
-                "OOOO",
-                "OOOO",
-                "OOOOOOOOOOO",
-                "OOOO");
-
-        // act
-        final String berlinerMidnight = berlinClock.convertTime(midnight);
-
-        // assert
-        assertThat(berlinerMidnight).isEqualTo(expectedBerlinerMidnight);
-    }
-
-    @Test
     public void testEvenSecond() {
         // arrange
         final String timeWithEvenSeconds = "00:00:02";
@@ -124,6 +106,24 @@ public class BerlinClockTest {
         // assert
         final String[] lines = output.split(NEWLINE);
         assertThat(lines[MINUTES2]).isEqualTo("YOOO");
+    }
+
+    @Test
+    public void convertMidnight() {
+        // arrange
+        final String midnight = "00:00:00";
+        final String expectedBerlinerMidnight = layoutAsString(
+                "Y",
+                "OOOO",
+                "OOOO",
+                "OOOOOOOOOOO",
+                "OOOO");
+
+        // act
+        final String berlinerMidnight = berlinClock.convertTime(midnight);
+
+        // assert
+        assertThat(berlinerMidnight).isEqualTo(expectedBerlinerMidnight);
     }
 
     @Test
