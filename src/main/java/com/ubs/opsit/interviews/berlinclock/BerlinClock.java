@@ -80,10 +80,11 @@ public class BerlinClock implements TimeConverter {
                 = {OFF, OFF, OFF, OFF, OFF, OFF, OFF, OFF, OFF, OFF, OFF};
         final int minQuotient5 = minutes / STEP_MIN_YELLOW;
         for (int i = 0; i < minQuotient5; i++) {
-            minLine1Buffer[i] = YELLOW;
-        }
-        for (int i = STEP_MIN_RED - 1; i < minQuotient5; i += STEP_MIN_RED) {
-            minLine1Buffer[i] = RED;
+            if (((i + 1) % STEP_MIN_RED) == 0) {
+                minLine1Buffer[i] = RED;
+            } else {
+                minLine1Buffer[i] = YELLOW;
+            }
         }
 
         final char[] minLine2Buffer = {OFF, OFF, OFF, OFF};
