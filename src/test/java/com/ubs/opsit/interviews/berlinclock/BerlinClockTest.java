@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.ubs.opsit.interviews.berlinclock.BerlinClock.NEWLINE;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class BerlinClockTest {
 
