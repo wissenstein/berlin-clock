@@ -163,57 +163,45 @@ public class BerlinClockTest {
         assertThat(extractLine(output, MINUTES2)).isEqualTo("YOOO");
     }
 
-    @Test
-    public void convertFirstStateOfDay() {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectTimeStringOfWrongStructure() {
         // arrange
-        final String midnight = "00:00:00";
-        final String expectedBerlinerClockState = layoutAsString(
-                "Y",
-                "OOOO",
-                "OOOO",
-                "OOOOOOOOOOO",
-                "OOOO");
+        final String timeStringOfWrongStructure = "20-55-90";
 
-        // act
-        final String output = berlinClock.convertTime(midnight);
-
-        // assert
-        assertThat(output).isEqualTo(expectedBerlinerClockState);
+        // act and assert
+        berlinClock.convertTime(timeStringOfWrongStructure);
     }
 
-    @Test
-    public void convertLastStateOfDay() {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectHourValuesGreaterThan24() {
         // arrange
-        final String lastMinuteOfDay = "23:59:59";
-        final String expectedBerlinClockState = layoutAsString(
-                "O",
-                "RRRR",
-                "RRRO",
-                "YYRYYRYYRYY",
-                "YYYY");
+        final String timeStringWithMoreThan24Hr = "25:26:05";
 
-        // act
-        final String output = berlinClock.convertTime(lastMinuteOfDay);
+        // act and assert
+        berlinClock.convertTime(timeStringWithMoreThan24Hr);
+    }
 
-        // assert
-        assertThat(output).isEqualTo(expectedBerlinClockState);
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectMinuteValuesGreaterThan59() {
+        // arrange
+        final String timeStringWithMoreThan59Min = "13:60:42";
+
+        // act and assert
+        berlinClock.convertTime(timeStringWithMoreThan59Min);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectSecondValuesGreaterThan59() {
+        // arrange
+        final String timeStringWithMoreThan59Sec = "14:51:60";
+
+        // act and assert
+        berlinClock.convertTime(timeStringWithMoreThan59Sec);
     }
 
     private String extractLine(final String output, final int lineIndex) {
         final String[] lines = output.split(NEWLINE);
         final String line = lines[lineIndex];
         return line;
-    }
-
-    private String layoutAsString(
-            String secLine,
-            String hrLine1, String hrLine2,
-            String minLine1, String minLine2) {
-
-        return secLine + NEWLINE
-                + hrLine1 + NEWLINE
-                + hrLine2 + NEWLINE
-                + minLine1 + NEWLINE
-                + minLine2;
     }
 }
