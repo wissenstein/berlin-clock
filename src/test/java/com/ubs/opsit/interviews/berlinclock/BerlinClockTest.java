@@ -153,22 +153,22 @@ public class BerlinClockTest {
     @Test
     public void secondMinuteLineShouldHaveYellowLampsOnAtNoMultiple5Minutes() {
         // arrange
-        final String timeWith6Min = "20:06:07";
+        final String timeWith9Min = "20:09:07";
 
         // act
-        final String output = berlinClock.convertTime(timeWith6Min);
+        final String output = berlinClock.convertTime(timeWith9Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES2)).isEqualTo("YOOO");
+        assertThat(extractLine(output, MINUTES2)).isEqualTo("YYYY");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldRejectTimeStringOfWrongStructure() {
         // arrange
-        final String timeStringOfWrongStructure = "20-55-90";
+        final String timeStringWithoutColons = "20-55-90";
 
         // act and assert
-        berlinClock.convertTime(timeStringOfWrongStructure);
+        berlinClock.convertTime(timeStringWithoutColons);
     }
 
     @Test(expected = IllegalArgumentException.class)
