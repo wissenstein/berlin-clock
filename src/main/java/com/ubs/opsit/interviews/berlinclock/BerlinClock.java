@@ -15,24 +15,6 @@ public class BerlinClock implements TimeConverter {
 
     private static final int DECIMAL_RADIX = 10;
 
-    private static final char YELLOW = 'Y';
-    private static final char RED = 'R';
-    private static final char OFF = 'O';
-    private static final char[] LAMPS_RED
-            = {RED, RED, RED, RED};
-    private static final char[] LAMPS_YELLOW
-            = {YELLOW, YELLOW, YELLOW, YELLOW};
-    private static final char[] LAMPS_YELLOW_RED
-            = {
-                YELLOW, YELLOW,
-                RED,
-                YELLOW, YELLOW,
-                RED,
-                YELLOW, YELLOW,
-                RED,
-                YELLOW, YELLOW
-            };
-
     private static final int STEP = 5;
     private static final int MAX_HOURS = 24;
     private static final int MAX_MINUTES = 59;
@@ -69,32 +51,6 @@ public class BerlinClock implements TimeConverter {
 
         public int getSeconds() {
             return seconds;
-        }
-    }
-
-    private static final class Line {
-        private final char[] colors;
-        private int lampsOnCount;
-
-        public Line(char[] lamps) {
-            this.colors = lamps;
-        }
-
-        public void setLampsOnCount(int lampsOnCount) {
-            this.lampsOnCount = lampsOnCount;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lampsOnCount; i++) {
-                builder.append(colors[i]);
-            }
-            for (int i = lampsOnCount; i < colors.length; i++) {
-                builder.append(OFF);
-            }
-
-            return builder.toString();
         }
     }
 
@@ -149,13 +105,13 @@ public class BerlinClock implements TimeConverter {
     public String convertTime(String aTime) throws IllegalArgumentException {
         final TimeValues timeValues = validateAndParseTimeString(aTime);
 
-        final Line hrLine1 = new Line(LAMPS_RED);
-        final Line hrLine2 = new Line(LAMPS_RED);
-        final Line minLine1 = new Line(LAMPS_YELLOW_RED);
-        final Line minLine2 = new Line(LAMPS_YELLOW);
+        final Line hrLine1 = Line.red();
+        final Line hrLine2 = Line.red();
+        final Line minLine1 = Line.yellowAndRed();
+        final Line minLine2 = Line.yellow();
 
         final boolean secondsValueIsEven = (timeValues.getSeconds() % 2) == 0;
-        final char secLamp = secondsValueIsEven ? YELLOW : OFF;
+        final char secLamp = secondsValueIsEven ? Line.YELLOW : Line.OFF;
 
         final int hours = timeValues.getHours();
         hrLine1.setLampsOnCount(hours / STEP);
