@@ -9,7 +9,8 @@ import java.util.regex.Pattern;
 class Parser {
 
     // Regular expression to validate time string
-    private static final String TIME_PATTERN = "^\\d\\d:\\d\\d:\\d\\d$";
+    private static final String TIME_PATTERN
+            = "^([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]$";
 
     // Indexes of substrings parse time values
     private static final int HR_START = 0;
@@ -19,11 +20,6 @@ class Parser {
     private static final int SEC_START = 6;
 
     private static final int DECIMAL_RADIX = 10;
-
-    // Maximum bounds to validate time values
-    private static final int MAX_HOURS = 24;
-    private static final int MAX_MINUTES = 59;
-    private static final int MAX_SECONDS = 59;
 
     public TimeValues parseTimeString(String timeString)
             throws IllegalArgumentException {
@@ -37,8 +33,6 @@ class Parser {
         final int seconds = Integer.parseInt(
                 timeString.substring(SEC_START), DECIMAL_RADIX);
 
-        validateTimeValues(hours, minutes, seconds);
-
         return new TimeValues(hours, minutes, seconds);
     }
 
@@ -51,28 +45,6 @@ class Parser {
             throw new IllegalArgumentException(
                     "The passed time string [" + timeString
                             + "] doesn't match to required format [HH:mm:ss]");
-        }
-    }
-
-    private void validateTimeValues(
-            final int hours, final int minutes, final int seconds
-    ) throws IllegalArgumentException {
-        // as a time string is allowed to contain
-        // only unsigned numbers and colons, no negative number can appear.
-        // Therefore we check only maximum values
-
-        if (hours > MAX_HOURS) {
-            throw new IllegalArgumentException(
-                    "Hours value exceeds maximum limit of ["
-                            + MAX_HOURS + "]");
-        } else if (minutes > MAX_MINUTES) {
-            throw new IllegalArgumentException(
-                    "Minutes value exceeds maximum limit of ["
-                            + MAX_MINUTES + "]");
-        } else if (seconds > MAX_SECONDS) {
-            throw new IllegalArgumentException(
-                    "Seconds value exceeds maximum limit of ["
-                            + MAX_SECONDS + "]");
         }
     }
 }
