@@ -4,16 +4,17 @@ import com.ubs.opsit.interviews.TimeConverter;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.ubs.opsit.interviews.berlinclock.BerlinClock.NEWLINE;
 
 public class BerlinClockTest {
 
     private final TimeConverter berlinClock = new BerlinClock();
 
-    private final int HOURS1 = 1;
-    private final int HOURS2 = 2;
-    private final int MINUTES1 = 3;
-    private final int MINUTES2 = 4;
+    private final static int SECONDS = 0;
+    private final static int HOURS1 = 1;
+    private final static int HOURS2 = 2;
+    private final static int MINUTES1 = 3;
+    private final static int MINUTES2 = 4;
+    private final static String NEWLINE = System.lineSeparator();
 
     @Test
     public void secondLampShouldBeYellowAtEvenSecond() {
@@ -24,8 +25,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith2Sec);
 
         // assert
-        final String secLine = output.substring(0, 1);
-        assertThat(secLine).isEqualTo("Y");
+        assertThat(extractLine(output, SECONDS)).isEqualTo("Y");
     }
 
     @Test
@@ -37,8 +37,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith5Sec);
 
         // assert
-        final String secLine = output.substring(0, 1);
-        assertThat(secLine).isEqualTo("O");
+        assertThat(extractLine(output, SECONDS)).isEqualTo("O");
     }
 
     @Test

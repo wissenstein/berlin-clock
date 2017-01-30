@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class BerlinClock implements TimeConverter {
 
-    public static final String NEWLINE = System.lineSeparator();
+    private static final String NEWLINE = System.lineSeparator();
 
     private static final int DECIMAL_RADIX = 10;
 
