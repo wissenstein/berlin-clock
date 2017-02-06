@@ -39,12 +39,17 @@ class Parser {
     private void validateTimeString(String timeString)
             throws IllegalArgumentException {
 
-        Pattern isoTimePattern = Pattern.compile(TIME_PATTERN);
-
-        if (!isoTimePattern.matcher(timeString).matches()) {
+        if (timeString == null) {
             throw new IllegalArgumentException(
-                    "The passed time string [" + timeString
-                            + "] doesn't match to required format [HH:mm:ss]");
+                    "Time string is not allowed to be null");
+        } else {
+            Pattern isoTimePattern = Pattern.compile(TIME_PATTERN);
+
+            if (!isoTimePattern.matcher(timeString).matches()) {
+                throw new IllegalArgumentException(
+                        "The passed time string [" + timeString
+                        + "] doesn't match to required format [HH:mm:ss]");
+            }
         }
     }
 }

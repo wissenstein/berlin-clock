@@ -197,6 +197,15 @@ public class BerlinClockTest {
         berlinClock.convertTime(timeStringWithMoreThan59Sec);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectNulls() {
+        // arrange
+        final String nullTimeString = null;
+
+        // act and assert
+        berlinClock.convertTime(nullTimeString);
+    }
+
     private String extractLine(final String output, final int lineIndex) {
         final String[] lines = output.split(NEWLINE);
         final String line = lines[lineIndex];
