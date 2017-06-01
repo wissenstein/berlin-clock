@@ -3,7 +3,7 @@ package com.ubs.opsit.interviews.berlinclock;
 import com.ubs.opsit.interviews.TimeConverter;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class BerlinClockTest {
 
@@ -60,7 +60,7 @@ public class BerlinClockTest {
         // act
         final String output = berlinClock.convertTime(timeWith14Hr);
 
-         // assert
+        // assert
         assertThat(extractLine(output, HOURS1)).isEqualTo("RROO");
     }
 
@@ -161,49 +161,74 @@ public class BerlinClockTest {
         assertThat(extractLine(output, MINUTES2)).isEqualTo("YYYY");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectTimeStringOfWrongStructure() {
         // arrange
         final String timeStringWithoutColons = "20-55-90";
 
-        // act and assert
-        berlinClock.convertTime(timeStringWithoutColons);
+        // act
+        final Throwable exception = catchThrowable(() -> {
+            berlinClock.convertTime(timeStringWithoutColons);
+        });
+
+        // assert
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectHourValuesGreaterThan24() {
         // arrange
         final String timeStringWithMoreThan24Hr = "25:26:05";
 
         // act and assert
-        berlinClock.convertTime(timeStringWithMoreThan24Hr);
+        final Throwable exception = catchThrowable(() -> {
+            berlinClock.convertTime(timeStringWithMoreThan24Hr);
+        });
+
+        // assert
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectMinuteValuesGreaterThan59() {
         // arrange
         final String timeStringWithMoreThan59Min = "13:60:42";
 
         // act and assert
-        berlinClock.convertTime(timeStringWithMoreThan59Min);
+        final Throwable exception = catchThrowable(() -> {
+            berlinClock.convertTime(timeStringWithMoreThan59Min);
+        });
+
+        // assert
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectSecondValuesGreaterThan59() {
         // arrange
         final String timeStringWithMoreThan59Sec = "14:51:60";
 
         // act and assert
-        berlinClock.convertTime(timeStringWithMoreThan59Sec);
+        final Throwable exception = catchThrowable(() -> {
+            berlinClock.convertTime(timeStringWithMoreThan59Sec);
+        });
+
+        // assert
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectNulls() {
         // arrange
         final String nullTimeString = null;
 
         // act and assert
-        berlinClock.convertTime(nullTimeString);
+        final Throwable exception = catchThrowable(() -> {
+            berlinClock.convertTime(nullTimeString);
+        });
+
+        // assert
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
     private String extractLine(final String output, final int lineIndex) {
