@@ -7,14 +7,49 @@ import static org.assertj.core.api.Assertions.*;
 
 public class BerlinClockTest {
 
-    private final TimeConverter berlinClock = new BerlinClock();
+    // sample line: length:
+    // O                 1
+    // RROO              4
+    // RRRR              4
+    // YYRYYROOOOO      11
+    // YYYY              4
+    private static final int NL = System.lineSeparator().length();
+    private static final int SEC_START = 0;
+    private static final int SEC_END = SEC_START + 1;
+    private static final int HR1_START = SEC_END + NL;
+    private static final int HR1_END = HR1_START + 4;
+    private static final int HR2_START = HR1_END + NL;
+    private static final int HR2_END = HR2_START + 4;
+    private static final int MIN1_START = HR2_END + NL;
+    private static final int MIN1_END = MIN1_START + 11;
+    private static final int MIN2_START = MIN1_END + NL;
+    private static final int MIN2_END = MIN2_START + 4;
 
-    private final static int SECONDS = 0;
-    private final static int HOURS1 = 1;
-    private final static int HOURS2 = 2;
-    private final static int MINUTES1 = 3;
-    private final static int MINUTES2 = 4;
-    private final static String NEWLINE = System.lineSeparator();
+    private static enum Line {
+        SECONDS(SEC_START, SEC_END),
+        HOURS1(HR1_START, HR1_END),
+        HOURS2(HR2_START, HR2_END),
+        MINUTES1(MIN1_START, MIN1_END),
+        MINUTES2(MIN2_START, MIN2_END);
+
+        private final int startIndex;
+        private final int endIndex;
+
+        Line(int startIndex, int endIndex) {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
+        int getStartIndex() {
+            return startIndex;
+        }
+
+        int getEndIndex() {
+            return endIndex;
+        }
+    }
+
+    private final TimeConverter berlinClock = new BerlinClock();
 
     @Test
     public void secondLampShouldBeYellowAtEvenSecond() {
@@ -25,7 +60,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith2Sec);
 
         // assert
-        assertThat(extractLine(output, SECONDS)).isEqualTo("Y");
+        assertThat(extractLine(output, Line.SECONDS)).isEqualTo("Y");
     }
 
     @Test
@@ -37,7 +72,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith5Sec);
 
         // assert
-        assertThat(extractLine(output, SECONDS)).isEqualTo("O");
+        assertThat(extractLine(output, Line.SECONDS)).isEqualTo("O");
     }
 
     @Test
@@ -49,7 +84,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith3Hr);
 
         // assert
-        assertThat(extractLine(output, HOURS1)).isEqualTo("OOOO");
+        assertThat(extractLine(output, Line.HOURS1)).isEqualTo("OOOO");
     }
 
     @Test
@@ -61,7 +96,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith14Hr);
 
         // assert
-        assertThat(extractLine(output, HOURS1)).isEqualTo("RROO");
+        assertThat(extractLine(output, Line.HOURS1)).isEqualTo("RROO");
     }
 
     @Test
@@ -73,7 +108,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith21Hr);
 
         // assert
-        assertThat(extractLine(output, HOURS1)).isEqualTo("RRRR");
+        assertThat(extractLine(output, Line.HOURS1)).isEqualTo("RRRR");
     }
 
     @Test
@@ -85,7 +120,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith15Hr);
 
         // assert
-        assertThat(extractLine(output, HOURS2)).isEqualTo("OOOO");
+        assertThat(extractLine(output, Line.HOURS2)).isEqualTo("OOOO");
     }
 
     @Test
@@ -97,7 +132,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith21Hr);
 
         // assert
-        assertThat(extractLine(output, HOURS2)).isEqualTo("ROOO");
+        assertThat(extractLine(output, Line.HOURS2)).isEqualTo("ROOO");
     }
 
     @Test
@@ -109,7 +144,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith4Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES1)).isEqualTo("OOOOOOOOOOO");
+        assertThat(extractLine(output, Line.MINUTES1)).isEqualTo("OOOOOOOOOOO");
     }
 
     @Test
@@ -122,7 +157,7 @@ public class BerlinClockTest {
                 = berlinClock.convertTime(timeWith10Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES1)).isEqualTo("YYOOOOOOOOO");
+        assertThat(extractLine(output, Line.MINUTES1)).isEqualTo("YYOOOOOOOOO");
     }
 
     @Test
@@ -134,7 +169,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith30Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES1)).isEqualTo("YYRYYROOOOO");
+        assertThat(extractLine(output, Line.MINUTES1)).isEqualTo("YYRYYROOOOO");
     }
 
     @Test
@@ -146,7 +181,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith45Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES2)).isEqualTo("OOOO");
+        assertThat(extractLine(output, Line.MINUTES2)).isEqualTo("OOOO");
     }
 
     @Test
@@ -158,7 +193,7 @@ public class BerlinClockTest {
         final String output = berlinClock.convertTime(timeWith9Min);
 
         // assert
-        assertThat(extractLine(output, MINUTES2)).isEqualTo("YYYY");
+        assertThat(extractLine(output, Line.MINUTES2)).isEqualTo("YYYY");
     }
 
     @Test
@@ -231,9 +266,7 @@ public class BerlinClockTest {
         assertThat(exception).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private String extractLine(final String output, final int lineIndex) {
-        final String[] lines = output.split(NEWLINE);
-        final String line = lines[lineIndex];
-        return line;
+    private String extractLine(final String output, final Line line) {
+        return output.substring(line.getStartIndex(), line.getEndIndex());
     }
 }
